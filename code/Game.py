@@ -11,12 +11,14 @@ class Game:
         self.running = True
 
     def run(self):
-        menu = Menu(self.screen)
-        menu.run()
-
+        pygame.display.set_caption('Shinobi Attack')
         while self.running:
+            menu = Menu(self.screen)
+            menu.run()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
 
         pygame.quit()
+        quit()
