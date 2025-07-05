@@ -4,13 +4,15 @@ import pygame.image
 
 
 class Entity(ABC):
-    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str):
+    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int):
         self.name = name
         self.surf = pygame.image.load(path).convert_alpha()
         # self.rect = self.surf.get_rect(left=position[0], top=position[1])
         self.speed = 0
         self.wx = wx
         self.wy = wy
+        self.w = w
+        self.h = h
         self.position = position
 
     @abstractmethod

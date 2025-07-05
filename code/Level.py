@@ -29,7 +29,7 @@ class Level:
                 self.screen.blit(source=surf_bg, dest=rect)
 
                 for ent in self.entity_list:
-                    self.level_blit(ent.surf, (ent.wx, ent.wy), ent.get_pos(), (54, 76))
+                    self.level_blit(ent.surf, (ent.wx, ent.wy), ent.get_pos(), (ent.w, ent.h))
                     ent.entity_text(self.screen, TEXT_SMALL, ent.name, COLOR_BLACK,
                                     (ent.get_pos()[0] + 50, ent.get_pos()[1] - 40))
                     ent.life_rect(self.screen, HEALTH[ent.name], (ent.get_pos()[0], ent.get_pos()[1] - 20))

@@ -8,5 +8,6 @@ class FactoryEntity:
     def get_entity(entity_name: str, position=(0, 0)):
         match entity_name:
             case 'Player':
-                return Player('Player', 40, 53, [10, SCREEN_HEIGHT - 200], PATH_BG[2])
+                return Player('Player', 40, 53,
+                              [10, SCREEN_HEIGHT - 200], PATH_BG[2], 54, 76)
         return None

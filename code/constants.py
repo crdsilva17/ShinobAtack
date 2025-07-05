@@ -36,7 +36,10 @@ PATH_BG = (
     'assets/fantasy-2d-battlegrounds/PNG/Battleground1/Bright/Battleground1.png',
     'assets/fantasy-2d-battlegrounds/PNG/Battleground2/Bright/Battleground2.png',
     'assets/shinob-sprites/Samurai/Idle.png',
-    'assets/shinob-sprites/Samurai/Run.png'
+    'assets/shinob-sprites/Samurai/Run.png',
+    'assets/shinob-sprites/Samurai/Attack_1.png',
+    'assets/shinob-sprites/Samurai/Attack_2.png',
+    'assets/shinob-sprites/Samurai/Attack_3.png'
            )
 
 # S

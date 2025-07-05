@@ -1,5 +1,5 @@
 from pygame import draw, font, key, image, transform
-from pygame.constants import K_RIGHT, K_LEFT
+from pygame.constants import K_RIGHT, K_LEFT, K_LCTRL, K_LALT
 from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
@@ -9,21 +9,27 @@ from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, SCREEN_WIDTH, P
 
 
 class Player(Entity):
-    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str):
-        super().__init__(name, wx, wy, position, path)
+    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int):
+        super().__init__(name, wx, wy, position, path, w, h)
         self.name = name
         self.wx = wx
         self.wy = wy
+        self.w = w
+        self.h = h
         self.position = position
         self.path = path
         self.speed = 10
         self.run_step = 0
+        self.dir = 0
+        self.atck = 0
+        self.type_attack = 0
 
     def move(self):
         run = [13, 142, 269, 396, 523, 650, 777, 904]  # Vetor para implementar animações
-
+        self.w = 54
         key_pressed = key.get_pressed()
         if key_pressed[K_RIGHT] and self.position[0] < SCREEN_WIDTH - 50:
+            self.dir = 0
             self.surf = image.load(PATH_BG[3]).convert_alpha()  # Carregar imagem correndo
             self.position[0] += 1 * self.speed
             self.wx = run[self.run_step]
@@ -34,18 +40,40 @@ class Player(Entity):
         elif key_pressed[K_LEFT] and self.position[0] > 0:
             self.surf = image.load(PATH_BG[3]).convert_alpha()
             self.surf = transform.flip(self.surf, True, False)  # Espelhar imagem
+            self.dir = 1
             self.position[0] -= 1 * self.speed
             self.wx = run[self.run_step] + 52  # Constantante para compensar o flip da imagem
             self.run_step -= 1
             if self.run_step <= 0:
                 self.run_step = len(run) - 1
+        elif key_pressed[K_LCTRL]:
+            self.type_attack = 0
+            self.attack()
+        elif key_pressed[K_LALT]:
+            self.type_attack = 1
+            self.attack()
         else:
             self.run_step = 0
             self.surf = image.load(PATH_BG[2]).convert_alpha()
+            if self.dir > 0:
+                self.surf = transform.flip(self.surf, True, False)
             self.wx = 40
 
     def attack(self):
-        pass
+        self.w = 104
+        attack_one = [22, 149, 276, 403, 530, 657]
+        self.surf = image.load(PATH_BG[5 if self.type_attack == 1 else 4]).convert_alpha()  # Carregar imagem correndo
+        if self.dir > 0:
+            self.surf = transform.flip(self.surf, True, False)
+            self.wx = attack_one[self.atck] - (30 if self.type_attack == 1 else 20)
+            self.atck -= 1
+            if self.atck <= 0:
+                self.atck = len(attack_one) - (1 if self.type_attack == 0 else 3)
+        else:
+            self.wx = attack_one[self.atck]
+            self.atck += 1
+            if self.atck >= len(attack_one) - (1 if self.type_attack == 0 else 3):
+                self.atck = 0
 
     def damage(self, receive: int):
         pass
