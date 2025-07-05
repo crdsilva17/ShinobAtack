@@ -1,6 +1,6 @@
 class Menu:
-    def __init__(self):
-        pass  # TODO Construtor menu
+    def __init__(self, screen):
+        self.screen = screen
 
     def run(self):
         pass  # TODO

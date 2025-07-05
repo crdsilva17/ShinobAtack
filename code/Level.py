@@ -1,6 +1,8 @@
 class Level:
     def __init__(self):
-        pass
+        self.screen = None
+        self.name = None
+        self.list_entity = None
 
     def run(self):
         pass
