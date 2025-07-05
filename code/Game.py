@@ -1,5 +1,7 @@
 import pygame.base
 from pygame import display, event, constants
+
+from code.Level import Level
 from code.Menu import Menu
 from code.constants import SCREEN_WIDTH, SCREEN_HEIGHT, MENU_OPTION
 
@@ -16,7 +18,9 @@ class Game:
             menu = Menu(self.screen)
             result = menu.run()
 
-            if result == MENU_OPTION[2]:
+            if result == MENU_OPTION[0]:
+                level = Level(self.screen, 'level1')
+            elif result == MENU_OPTION[2]:
                 self.running = False
 
             for events in pygame.event.get():

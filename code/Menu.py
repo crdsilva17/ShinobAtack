@@ -8,7 +8,7 @@ from code.constants import *
 
 
 class Menu:
-    def __init__(self, screen):
+    def __init__(self, screen: Surface):
         self.screen = screen
         self.surf = transform.scale(image.load('assets/fantasy-2d-battlegrounds/'
                                                'PNG/Battleground1/Bright/'
