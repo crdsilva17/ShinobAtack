@@ -1,12 +1,12 @@
-import pygame
-
+import pygame.base
+from pygame import display, event, constants
 from code.Menu import Menu
-from code.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from code.constants import SCREEN_WIDTH, SCREEN_HEIGHT, MENU_OPTION
 
 
 class Game:
     def __init__(self):
-        pygame.init()
+        pygame.base.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.running = True
 
@@ -14,11 +14,14 @@ class Game:
         pygame.display.set_caption('Shinobi Attack')
         while self.running:
             menu = Menu(self.screen)
-            menu.run()
+            result = menu.run()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            if result == MENU_OPTION[2]:
+                self.running = False
+
+            for events in pygame.event.get():
+                if events.type == pygame.constants.QUIT:
                     self.running = False
 
-        pygame.quit()
+        pygame.display.quit()
         quit()

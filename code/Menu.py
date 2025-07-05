@@ -11,8 +11,8 @@ class Menu:
     def __init__(self, screen):
         self.screen = screen
         self.surf = transform.scale(image.load('assets/fantasy-2d-battlegrounds/'
-                                                             'PNG/Battleground1/Bright/'
-                                                             'Battleground1.png'), (SCREEN_WIDTH, SCREEN_HEIGHT))
+                                               'PNG/Battleground1/Bright/'
+                                               'Battleground1.png'), (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.rect = self.surf.get_rect()
 
     def run(self):
@@ -25,21 +25,26 @@ class Menu:
 
             for i in range(len(MENU_OPTION)):
                 if i == menu_option:
-                    self.menu_text(TEXT_MEDIUM, MENU_OPTION[i], COLOR_YELLOW, (SCREEN_CENTER, 400 + 30 * i))
+                    self.menu_text(TEXT_MEDIUM, MENU_OPTION[i], COLOR_BLUE, (SCREEN_CENTER, 400 + 30 * i))
                 else:
                     self.menu_text(TEXT_MEDIUM, MENU_OPTION[i], COLOR_WHITE, (SCREEN_CENTER, 400 + 30 * i))
-
-            display.flip()
 
             for events in event.get():
                 if events.type == QUIT:
                     display.quit()
                     quit()
                 if events.type == KEYDOWN:
-                    pass
+                    if events.key == K_DOWN:
+                        menu_option = menu_option + 1 if menu_option < len(MENU_OPTION) - 1 else 0
+                    elif events.key == K_UP:
+                        menu_option = menu_option - 1 if menu_option > 0 else len(MENU_OPTION) - 1
+                    elif events.key == K_RETURN:
+                        return MENU_OPTION[menu_option]
+
+            display.flip()
 
     def menu_text(self, size: int, text: str, color: tuple, position: tuple):
-        text_font: Font = font.SysFont(name='Lucida Sans Typewriter', size=size)
+        text_font: Font = font.SysFont(name='Arial', size=size)
         text_surf: Surface = text_font.render(text, True, color).convert_alpha()
         text_rect: Rect = text_surf.get_rect(center=position)
         self.screen.blit(text_surf, text_rect)
