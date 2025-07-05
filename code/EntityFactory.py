@@ -1,5 +1,5 @@
-from code.Background import Background
-from code.constants import PATH_BG
+from code.Player import Player
+from code.constants import PATH_BG, SCREEN_HEIGHT
 
 
 class FactoryEntity:
@@ -7,7 +7,6 @@ class FactoryEntity:
     @staticmethod
     def get_entity(entity_name: str, position=(0, 0)):
         match entity_name:
-            case 'Level1Bg':
-                bg = Background('/Battleground2', position, PATH_BG[1])
-                return bg
+            case 'Player':
+                return Player('Player', [10, SCREEN_HEIGHT - 200], PATH_BG[2])
         return None

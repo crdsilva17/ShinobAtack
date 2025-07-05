@@ -1,10 +1,28 @@
 # C
 COLOR_RED = (203, 4, 4)
-COLOR_BLUE = (77, 168, 218)
+COLOR_GREEN = (4, 203, 4)
+COLOR_BLUE = (4, 4, 203)
 COLOR_ORANGE = (255, 159, 0)
 COLOR_TEAL = (48, 152, 152)
 COLOR_YELLOW = (255, 214, 107)
 COLOR_WHITE = (255, 255, 255)
+COLOR_BLACK = (0, 0, 0)
+
+# D
+DAMAGE = ({
+    'Player': 20,
+    'Enemy1': 8,
+    'Enemy2': 5,
+    'Enemy3': 2
+})
+
+# H
+HEALTH = ({
+    'Player': 100,
+    'Enemy1': 100,
+    'Enemy2': 50,
+    'Enemy3': 40
+})
 
 # M
 MENU_OPTION = (
@@ -16,15 +34,17 @@ MENU_OPTION = (
 # P
 PATH_BG = (
     'assets/fantasy-2d-battlegrounds/PNG/Battleground1/Bright/Battleground1.png',
-    'assets/fantasy-2d-battlegrounds/PNG/Battleground2/Bright/Battleground2.png'
+    'assets/fantasy-2d-battlegrounds/PNG/Battleground2/Bright/Battleground2.png',
+    'assets/shinob-sprites/Samurai/Idle.png',
+    'assets/shinob-sprites/Samurai/Run.png'
            )
 
 # S
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1220
 SCREEN_HEIGHT = 600
 SCREEN_CENTER = SCREEN_WIDTH / 2
 
 # T
 TEXT_BIG = 60
 TEXT_MEDIUM = 28
-TEXT_SMALL = 14
+TEXT_SMALL = 20
