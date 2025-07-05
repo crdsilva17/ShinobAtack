@@ -19,7 +19,8 @@ class Game:
             result = menu.run()
 
             if result == MENU_OPTION[0]:
-                level = Level(self.screen, 'level1')
+                level = Level(self.screen, 'level1Bg')
+                level.run()
             elif result == MENU_OPTION[2]:
                 self.running = False
 

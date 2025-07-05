@@ -13,6 +13,12 @@ MENU_OPTION = (
     'EXIT'
 )
 
+# P
+PATH_BG = (
+    'assets/fantasy-2d-battlegrounds/PNG/Battleground1/Bright/Battleground1.png',
+    'assets/fantasy-2d-battlegrounds/PNG/Battleground2/Bright/Battleground2.png'
+           )
+
 # S
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
