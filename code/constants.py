@@ -1,4 +1,6 @@
 # C
+import pygame.constants
+
 COLOR_RED = (203, 4, 4)
 COLOR_GREEN = (4, 203, 4)
 COLOR_BLUE = (4, 4, 203)
@@ -15,6 +17,11 @@ DAMAGE = ({
     'Enemy2': 5,
     'Enemy3': 2
 })
+
+# E
+ENEMY_MAX = 5
+EVENT_ENEMY = pygame.constants.USEREVENT + 1
+ENEMY_TIME = 2000
 
 # H
 HEALTH = ({

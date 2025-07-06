@@ -1,15 +1,18 @@
-from pygame import draw, font
+import math
+import random
+
+from pygame import draw, font, image, transform
 from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
 
 from code.Entity import Entity
-from code.Player import Player
-from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, HEALTH
+from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, HEALTH, SCREEN_WIDTH, PATH_BG
 
 
 class Enemy(Entity):
-    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int):
+    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int,
+                 game_mediator):
         super().__init__(name, wx, wy, path, w, h)
         self.name = name
         self.wx = wx
@@ -17,18 +20,57 @@ class Enemy(Entity):
         self.w = w
         self.h = h
         self.path = path
-        self.speed = 5
+        self.speed = random.randint(1, 6)
         self.run_step = 0
-        self.dir = 0
+        self.dir = random.choice([0, 1])  # 0 = direita, 1 = esquerda
+        self.patrol_timer = 0
+        self.patrol_delay = 60
+        self.map_limit = (0, SCREEN_WIDTH)  # (x_min, x_max)
         self.atck = 0
         self.type_attack = 0
         self.position = position
         self.health_limit = HEALTH[name] * 0.8
+        self.game_mediator = game_mediator
+        self.game_mediator.add_enemy(self)
 
     def move(self):
-        pass
+        player_pos = self.game_mediator.get_player_position()
+        self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
+        if self.dir == 1:
+            self.surf = transform.flip(self.surf, True, False)
+        distance = math.hypot(player_pos[0] - self.position[0], 0) if player_pos else float('inf')
+        distance_max = 500
+
+        if player_pos and distance <= distance_max:
+            # Perseguir o player no eixo X
+            if player_pos[0] - self.position[0] > 30:
+                self.dir = 0  # direita
+                self.position[0] += self.speed
+            elif self.position[0] - player_pos[0] > 30:
+                self.dir = 1  # esquerda
+                self.position[0] -= self.speed
+            else:
+                self.attack()
+        else:
+            # Movimento aleatório (patrulha)
+            self.patrol_timer += 1
+
+            if self.patrol_timer >= self.patrol_delay:
+                self.dir = random.choice([0, 1])  # nova direção aleatória
+                self.patrol_timer = 0
+            if self.dir == 0:
+                self.position[0] += self.speed
+            else:
+                self.position[0] -= self.speed
+            if self.position[0] <= self.map_limit[0]:
+                self.position[0] = self.map_limit[0]
+                self.dir = 0
+            elif self.position[0] >= self.map_limit[1]:
+                self.position[0] = self.map_limit[1]
+                self.dir = 1
 
     def attack(self):
+        print(f'{self.name} attack')
         pass
 
     def damage(self, receive: int):

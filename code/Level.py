@@ -6,7 +6,9 @@ from pygame.surface import Surface
 
 from code.Entity import Entity
 from code.EntityFactory import *
-from code.constants import PATH_BG, SCREEN_WIDTH, SCREEN_HEIGHT, TEXT_SMALL, COLOR_WHITE, HEALTH, COLOR_BLACK
+from code.GameMediator import GameMediator
+from code.constants import PATH_BG, SCREEN_WIDTH, SCREEN_HEIGHT, TEXT_SMALL, COLOR_WHITE, HEALTH, COLOR_BLACK, \
+    ENEMY_MAX, EVENT_ENEMY, ENEMY_TIME
 
 
 class Level:
@@ -14,8 +16,10 @@ class Level:
         self.screen = screen
         self.name = name
         self.entity_list: list[Entity] = []
-        self.entity_list.append(FactoryEntity.get_entity('Player'))
-        self.entity_list.append(FactoryEntity.get_entity('Enemy1'))
+        self.game_mediator = GameMediator()
+        self.entity_list.append(FactoryEntity.get_entity('Player', self.game_mediator))
+        pygame.time.set_timer(EVENT_ENEMY, ENEMY_TIME)
+
 
     def run(self):
         # pygame.mixer_music.load('')
@@ -41,6 +45,10 @@ class Level:
                 if events.type == constants.QUIT:
                     display.quit()
                     quit(0)
+                if events.type == EVENT_ENEMY:
+                    if self.game_mediator.count_enemies() < ENEMY_MAX:
+                        self.entity_list.append(FactoryEntity.get_entity('Enemy1', self.game_mediator))
+
             self.level_text(TEXT_SMALL, f'Level 1 - SCORE: {player_score}', COLOR_WHITE, (10, 20))
 
             display.flip()
