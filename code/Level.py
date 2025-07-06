@@ -1,3 +1,4 @@
+import pygame.mixer_music
 import pygame.surface
 from pygame import display, image, transform, event, constants, time, font
 from pygame.font import Font
@@ -12,20 +13,20 @@ from code.constants import PATH_BG, SCREEN_WIDTH, SCREEN_HEIGHT, TEXT_SMALL, COL
 
 
 class Level:
-    def __init__(self, screen: Surface, name: str):
+    def __init__(self, screen: Surface, name: str, player_score: int):
         self.screen = screen
         self.name = name
+        self.player_score = player_score
         self.entity_list: list[Entity] = []
         self.game_mediator = GameMediator()
         self.entity_list.append(FactoryEntity.get_entity('Player', self.game_mediator))
         pygame.time.set_timer(EVENT_ENEMY, ENEMY_TIME)
 
-
     def run(self):
-        # pygame.mixer_music.load('')
-        # pygame.mixer_music.play(-1)
+        pygame.mixer_music.load('assets/sound/level1.mp3')
+        pygame.mixer_music.play(-1)
+        pygame.mixer_music.set_volume(0.1)
         clock_fps = time.Clock()
-        player_score = 0
         while True:
             clock_fps.tick(60)
             if self.name == 'level1Bg':
@@ -39,7 +40,9 @@ class Level:
                                     (ent.get_pos()[0] + 50, ent.get_pos()[1] - TEXT_POS[ent.name]))
                     ent.life_rect(self.screen, ent.health, (ent.get_pos()[0], ent.get_pos()[1] - HEALTH_POS[ent.name]))
                     ent.move()
-            match player_score:
+
+            # Aumentando dificuldade conforme Score
+            match self.player_score:
                 case 20:
                     self.game_mediator.player.attack_range = 40
                 case 30:
@@ -49,24 +52,25 @@ class Level:
                 case 100:
                     self.game_mediator.player.attack_range = 10
 
+            # Player ataca inimigos
             for enemy in self.game_mediator.enemies:
                 self.game_mediator.check_attack(self.game_mediator.player, enemy)
                 if enemy.health <= 0:
-                    player_score += 1
+                    self.player_score += 1
                     self.game_mediator.destroy_enemy(enemy)
                     self.entity_list.remove(enemy)
 
             # Inimigos atacam o player
             for enemy in self.game_mediator.enemies:
                 if self.game_mediator.player is None:
-                    return
+                    return self.player_score
                 self.game_mediator.check_attack(enemy, self.game_mediator.player)
                 self.game_mediator.player.attacking = False
                 if self.game_mediator.player.health <= 0:
                     self.entity_list.remove(self.game_mediator.player)
                     self.game_mediator.remove_player()
             if self.game_mediator.player is None:
-                return
+                return self.player_score
 
             for events in event.get():
                 if events.type == constants.QUIT:
@@ -76,7 +80,7 @@ class Level:
                     if self.game_mediator.count_enemies() < ENEMY_MAX:
                         self.entity_list.append(FactoryEntity.get_entity('Enemy1', self.game_mediator))
 
-            self.level_text(TEXT_SMALL, f'Level 1 - SCORE: {player_score}', COLOR_WHITE, (10, 20))
+            self.level_text(TEXT_SMALL, f'Level 1 - SCORE: {self.player_score}', COLOR_WHITE, (10, 20))
 
             display.flip()
 
@@ -86,10 +90,9 @@ class Level:
         text_rect: Rect = text_surf.get_rect(left=position[0], top=position[1])
         self.screen.blit(text_surf, text_rect)
 
-    def level_blit(self, img, wxy:tuple, pos:tuple, size:tuple):
+    def level_blit(self, img, wxy: tuple, pos: tuple, size: tuple):
         surf = pygame.surface.Surface(size).convert()
-        surf.blit(img, (0,0), (wxy, size ))
+        surf.blit(img, (0, 0), (wxy, size))
         alpha = surf.get_at((0, 0))
         surf.set_colorkey(alpha)
         self.screen.blit(surf, pos)
-

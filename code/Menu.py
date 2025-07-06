@@ -1,3 +1,4 @@
+import pygame.mixer_music
 from pygame import transform, image, display, event, font
 from pygame.constants import *
 from pygame.font import Font
@@ -10,14 +11,16 @@ from code.constants import *
 class Menu:
     def __init__(self, screen: Surface):
         self.screen = screen
-        self.surf = transform.scale(image.load(PATH_BG['MenuBg']), (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.surf = transform.scale(image.load(PATH_BG['MenuBg']).convert_alpha(),
+                                    (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.rect = self.surf.get_rect()
 
     def run(self):
         menu_option = 0
-        # pygame.mixer_music.load('')
-        # pygame.mixer_music.play(-1)
-        while True:
+        pygame.mixer_music.load('assets/sound/menu2.mp3')
+        pygame.mixer_music.play(-1)
+        running = True
+        while running:
             self.screen.blit(source=self.surf, dest=self.rect)
             self.menu_text(TEXT_BIG, "SHINOBI ATTACK", COLOR_RED, (SCREEN_CENTER, 120))
 
@@ -29,8 +32,7 @@ class Menu:
 
             for events in event.get():
                 if events.type == QUIT:
-                    display.quit()
-                    quit()
+                    running = False
                 if events.type == KEYDOWN:
                     if events.key == K_DOWN:
                         menu_option = menu_option + 1 if menu_option < len(MENU_OPTION) - 1 else 0
@@ -40,6 +42,8 @@ class Menu:
                         return MENU_OPTION[menu_option]
 
             display.flip()
+        display.quit()
+        quit()
 
     def menu_text(self, size: int, text: str, color: tuple, position: tuple):
         text_font: Font = font.SysFont(name='Arial', size=size)

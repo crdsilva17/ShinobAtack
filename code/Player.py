@@ -1,4 +1,5 @@
 import pygame
+import pygame.mixer_music
 from pygame import draw, font, key, image, transform
 from pygame.constants import K_RIGHT, K_LEFT, K_LCTRL, K_LALT
 from pygame.font import Font
@@ -65,6 +66,8 @@ class Player(Entity):
             self.wx = 40
 
     def attack(self):
+        pygame.mixer_music.load('assets/sound/attack2.wav')
+        pygame.mixer_music.play()
         self.w = 104
         attack_one = [22, 149, 276, 403, 530, 657]
         self.surf = image.load(PATH_BG[f'{self.name}_attack{1+self.type_attack}']).convert_alpha()  # Carregar imagem correndo
