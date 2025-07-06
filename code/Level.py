@@ -7,8 +7,8 @@ from pygame.surface import Surface
 from code.Entity import Entity
 from code.EntityFactory import *
 from code.GameMediator import GameMediator
-from code.constants import PATH_BG, SCREEN_WIDTH, SCREEN_HEIGHT, TEXT_SMALL, COLOR_WHITE, HEALTH, COLOR_BLACK, \
-    ENEMY_MAX, EVENT_ENEMY, ENEMY_TIME
+from code.constants import PATH_BG, SCREEN_WIDTH, SCREEN_HEIGHT, TEXT_SMALL, COLOR_WHITE, COLOR_BLACK, \
+    ENEMY_MAX, EVENT_ENEMY, ENEMY_TIME, TEXT_POS, HEALTH_POS
 
 
 class Level:
@@ -36,10 +36,37 @@ class Level:
                 for ent in self.entity_list:
                     self.level_blit(ent.surf, (ent.wx, ent.wy), ent.get_pos(), (ent.w, ent.h))
                     ent.entity_text(self.screen, TEXT_SMALL, ent.name, COLOR_BLACK,
-                                    (ent.get_pos()[0] + 50, ent.get_pos()[1] - 40))
-                    ent.life_rect(self.screen, HEALTH[ent.name], (ent.get_pos()[0], ent.get_pos()[1] - 20))
+                                    (ent.get_pos()[0] + 50, ent.get_pos()[1] - TEXT_POS[ent.name]))
+                    ent.life_rect(self.screen, ent.health, (ent.get_pos()[0], ent.get_pos()[1] - HEALTH_POS[ent.name]))
                     ent.move()
+            match player_score:
+                case 20:
+                    self.game_mediator.player.attack_range = 40
+                case 30:
+                    self.game_mediator.player.attack_range = 30
+                case 80:
+                    self.game_mediator.player.attack_range = 20
+                case 100:
+                    self.game_mediator.player.attack_range = 10
 
+            for enemy in self.game_mediator.enemies:
+                self.game_mediator.check_attack(self.game_mediator.player, enemy)
+                if enemy.health <= 0:
+                    player_score += 1
+                    self.game_mediator.destroy_enemy(enemy)
+                    self.entity_list.remove(enemy)
+
+            # Inimigos atacam o player
+            for enemy in self.game_mediator.enemies:
+                if self.game_mediator.player is None:
+                    return
+                self.game_mediator.check_attack(enemy, self.game_mediator.player)
+                self.game_mediator.player.attacking = False
+                if self.game_mediator.player.health <= 0:
+                    self.entity_list.remove(self.game_mediator.player)
+                    self.game_mediator.remove_player()
+            if self.game_mediator.player is None:
+                return
 
             for events in event.get():
                 if events.type == constants.QUIT:
@@ -65,3 +92,4 @@ class Level:
         alpha = surf.get_at((0, 0))
         surf.set_colorkey(alpha)
         self.screen.blit(surf, pos)
+

@@ -13,6 +13,10 @@ class Entity(ABC):
         self.wy = wy
         self.w = w
         self.h = h
+        self.health = None
+        self.attack_range = None
+        self.attacking = False
+        self.entity_type = "neutral"
 
     @abstractmethod
     def move(self):
@@ -31,7 +35,7 @@ class Entity(ABC):
         pass
 
     @abstractmethod
-    def damage(self, receive: int):
+    def damage(self, amount: int):
         pass
 
     @abstractmethod

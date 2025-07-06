@@ -1,3 +1,4 @@
+import pygame
 from pygame import draw, font, key, image, transform
 from pygame.constants import K_RIGHT, K_LEFT, K_LCTRL, K_LALT
 from pygame.font import Font
@@ -23,6 +24,10 @@ class Player(Entity):
         self.dir = 0
         self.atck = 0
         self.type_attack = 0
+        self.health = HEALTH[self.name]
+        self.attack_range = 60
+        self.attacking = False
+        self.entity_type = "player"
 
     def move(self):
         run = [13, 142, 269, 396, 523, 650, 777, 904]  # Vetor para implementar animações
@@ -63,6 +68,10 @@ class Player(Entity):
         self.w = 104
         attack_one = [22, 149, 276, 403, 530, 657]
         self.surf = image.load(PATH_BG[f'{self.name}_attack{1+self.type_attack}']).convert_alpha()  # Carregar imagem correndo
+        if self.atck == 2:
+            self.attacking = True
+        else:
+            self.attacking = False
         if self.dir > 0:
             self.surf = transform.flip(self.surf, True, False)
             self.wx = attack_one[self.atck] - (30 if self.type_attack == 1 else 20)
@@ -75,8 +84,30 @@ class Player(Entity):
             if self.atck >= len(attack_one) - (1 if self.type_attack == 0 else 3):
                 self.atck = 0
 
-    def damage(self, receive: int):
-        pass
+    def get_rect(self):
+        return pygame.rect.Rect(self.position[0], self.position[1], self.w, self.h)
+
+    def get_attack_rect(self):
+        """Calcula a área onde a espada atinge."""
+        if self.dir == 0:  # direita
+            return pygame.rect.Rect(
+                self.position[0] + self.w,
+                self.position[1],
+                self.attack_range,
+                self.h
+            )
+        else:  # esquerda
+            return pygame.rect.Rect(
+                self.position[0] - self.attack_range,
+                self.position[1],
+                self.attack_range,
+                self.h
+            )
+
+    def damage(self, amount: int):
+        self.health -= amount
+        self.attacking = False
+        print(f"{self.name} recebeu dano! Vida restante: {self.health}")
 
     def get_pos(self):
         return self.position

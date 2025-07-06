@@ -1,6 +1,7 @@
 import math
 import random
 
+import pygame
 from pygame import draw, font, image, transform
 from pygame.font import Font
 from pygame.rect import Rect
@@ -20,7 +21,7 @@ class Enemy(Entity):
         self.w = w
         self.h = h
         self.path = path
-        self.speed = random.randint(1, 6)
+        self.speed = random.randint(2, 15)
         self.run_step = 0
         self.dir = random.choice([0, 1])  # 0 = direita, 1 = esquerda
         self.patrol_timer = 0
@@ -30,8 +31,12 @@ class Enemy(Entity):
         self.type_attack = 0
         self.position = position
         self.health_limit = HEALTH[name] * 0.8
+        self.health = HEALTH[self.name]
         self.game_mediator = game_mediator
         self.game_mediator.add_enemy(self)
+        self.attack_range = 40
+        self.attacking = False
+        self.entity_type = "enemy"
 
     def move(self):
         run = [5, 137, 266, 395, 520, 650, 776, 905]
@@ -97,6 +102,10 @@ class Enemy(Entity):
         self.w = 110
         attack_one = [22, 149, 273, 400]
         self.surf = image.load(PATH_BG[f'{self.name}_attack1']).convert_alpha()
+        if self.atck == 2:
+            self.attacking = True
+        else:
+            self.attacking = False
         if self.dir > 0:
             self.surf = transform.flip(self.surf, True, False)
             self.wx = attack_one[self.atck] - (30 if self.type_attack == 1 else 20)
@@ -109,8 +118,30 @@ class Enemy(Entity):
             if self.atck >= len(attack_one) - 1:
                 self.atck = 0
 
-    def damage(self, receive: int):
-        pass
+    def get_rect(self):
+        return pygame.rect.Rect(self.position[0], self.position[1], self.w, self.h)
+
+    def get_attack_rect(self):
+        """Calcula a área onde a espada atinge."""
+        if self.dir == 0:  # direita
+            return pygame.rect.Rect(
+                self.position[0] + self.w,
+                self.position[1],
+                self.attack_range,
+                self.h
+            )
+        else:  # esquerda
+            return pygame.rect.Rect(
+                self.position[0] - self.attack_range,
+                self.position[1],
+                self.attack_range,
+                self.h
+            )
+
+    def damage(self, amount: int):
+        self.health -= amount
+        self.attacking = False
+        print(f"{self.name} recebeu dano! Vida restante: {self.health}")
 
     def get_pos(self):
         return self.position

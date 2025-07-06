@@ -12,23 +12,27 @@ COLOR_BLACK = (0, 0, 0)
 
 # D
 DAMAGE = ({
-    'Player': 20,
-    'Enemy1': 8,
-    'Enemy2': 5,
+    'Player': 10,
+    'Enemy1': 4,
+    'Enemy2': 1,
     'Enemy3': 2
 })
 
 # E
-ENEMY_MAX = 5
+ENEMY_MAX = 50
 EVENT_ENEMY = pygame.constants.USEREVENT + 1
-ENEMY_TIME = 2000
+ENEMY_TIME = 1000
 
 # H
 HEALTH = ({
     'Player': 100,
-    'Enemy1': 70,
+    'Enemy1': 30,
     'Enemy2': 50,
     'Enemy3': 40
+})
+HEALTH_POS = ({
+    'Player': 20,
+    'Enemy1': 0
 })
 
 # M
@@ -61,3 +65,7 @@ SCREEN_CENTER = SCREEN_WIDTH / 2
 TEXT_BIG = 60
 TEXT_MEDIUM = 28
 TEXT_SMALL = 20
+TEXT_POS = ({
+    'Player': 40,
+    'Enemy1': 20
+})
