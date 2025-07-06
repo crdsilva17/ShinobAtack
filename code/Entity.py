@@ -4,7 +4,7 @@ import pygame.image
 
 
 class Entity(ABC):
-    def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int):
+    def __init__(self, name: str, wx: int, wy: int, path: str, w: int, h: int):
         self.name = name
         self.surf = pygame.image.load(path).convert_alpha()
         # self.rect = self.surf.get_rect(left=position[0], top=position[1])
@@ -13,7 +13,6 @@ class Entity(ABC):
         self.wy = wy
         self.w = w
         self.h = h
-        self.position = position
 
     @abstractmethod
     def move(self):
@@ -24,7 +23,7 @@ class Entity(ABC):
         pass
 
     @abstractmethod
-    def life_rect(self, screen, health: int, position: tuple):
+    def life_rect(self, *args, **kwargs):
         pass
 
     @abstractmethod
@@ -36,5 +35,5 @@ class Entity(ABC):
         pass
 
     @abstractmethod
-    def entity_text(self, screen, size: int, text: str, color: tuple, position: tuple):
+    def entity_text(self, *args, **kwargs):
         pass

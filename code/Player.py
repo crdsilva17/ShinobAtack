@@ -3,14 +3,14 @@ from pygame.constants import K_RIGHT, K_LEFT, K_LCTRL, K_LALT
 from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
-
 from code.Entity import Entity
-from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, SCREEN_WIDTH, PATH_BG
+from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, SCREEN_WIDTH, PATH_BG, HEALTH
 
 
 class Player(Entity):
     def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int):
-        super().__init__(name, wx, wy, position, path, w, h)
+        super().__init__(name, wx, wy, path, w, h)
+        self.health_limit = HEALTH[name] * 0.8
         self.name = name
         self.wx = wx
         self.wy = wy
@@ -30,7 +30,7 @@ class Player(Entity):
         key_pressed = key.get_pressed()
         if key_pressed[K_RIGHT] and self.position[0] < SCREEN_WIDTH - 50:
             self.dir = 0
-            self.surf = image.load(PATH_BG[3]).convert_alpha()  # Carregar imagem correndo
+            self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()  # Carregar imagem correndo
             self.position[0] += 1 * self.speed
             self.wx = run[self.run_step]
             self.run_step += 1
@@ -38,7 +38,7 @@ class Player(Entity):
                 self.run_step = 0
 
         elif key_pressed[K_LEFT] and self.position[0] > 0:
-            self.surf = image.load(PATH_BG[3]).convert_alpha()
+            self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
             self.surf = transform.flip(self.surf, True, False)  # Espelhar imagem
             self.dir = 1
             self.position[0] -= 1 * self.speed
@@ -54,7 +54,7 @@ class Player(Entity):
             self.attack()
         else:
             self.run_step = 0
-            self.surf = image.load(PATH_BG[2]).convert_alpha()
+            self.surf = image.load(PATH_BG[f'{self.name}_idle']).convert_alpha()
             if self.dir > 0:
                 self.surf = transform.flip(self.surf, True, False)
             self.wx = 40
@@ -62,7 +62,7 @@ class Player(Entity):
     def attack(self):
         self.w = 104
         attack_one = [22, 149, 276, 403, 530, 657]
-        self.surf = image.load(PATH_BG[5 if self.type_attack == 1 else 4]).convert_alpha()  # Carregar imagem correndo
+        self.surf = image.load(PATH_BG[f'{self.name}_attack{1+self.type_attack}']).convert_alpha()  # Carregar imagem correndo
         if self.dir > 0:
             self.surf = transform.flip(self.surf, True, False)
             self.wx = attack_one[self.atck] - (30 if self.type_attack == 1 else 20)
@@ -82,9 +82,9 @@ class Player(Entity):
         return self.position
 
     def life_rect(self, screen, health: int, position: tuple):
-        if health > 80:
+        if health > self.health_limit:
             draw.rect(screen, COLOR_GREEN, (position[0], position[1], health, 5))
-        elif 80 >= health > 30:
+        elif self.health_limit >= health > self.health_limit * 0.5:
             draw.rect(screen, COLOR_YELLOW, (position[0], position[1], health, 5))
         else:
             draw.rect(screen, COLOR_RED, (position[0], position[1], health, 5))

@@ -19,7 +19,7 @@ DAMAGE = ({
 # H
 HEALTH = ({
     'Player': 100,
-    'Enemy1': 100,
+    'Enemy1': 70,
     'Enemy2': 50,
     'Enemy3': 40
 })
@@ -32,15 +32,17 @@ MENU_OPTION = (
 )
 
 # P
-PATH_BG = (
-    'assets/fantasy-2d-battlegrounds/PNG/Battleground1/Bright/Battleground1.png',
-    'assets/fantasy-2d-battlegrounds/PNG/Battleground2/Bright/Battleground2.png',
-    'assets/shinob-sprites/Samurai/Idle.png',
-    'assets/shinob-sprites/Samurai/Run.png',
-    'assets/shinob-sprites/Samurai/Attack_1.png',
-    'assets/shinob-sprites/Samurai/Attack_2.png',
-    'assets/shinob-sprites/Samurai/Attack_3.png'
-           )
+PATH_BG = ({
+    'MenuBg': 'assets/fantasy-2d-battlegrounds/PNG/Battleground1/Bright/Battleground1.png',
+    'level1Bg': 'assets/fantasy-2d-battlegrounds/PNG/Battleground2/Bright/Battleground2.png',
+    'Player_idle': 'assets/shinob-sprites/Samurai/Idle.png',
+    'Player_run': 'assets/shinob-sprites/Samurai/Run.png',
+    'Player_attack1': 'assets/shinob-sprites/Samurai/Attack_1.png',
+    'Player_attack2': 'assets/shinob-sprites/Samurai/Attack_2.png',
+    'Enemy1_idle': 'assets/samurai-sprite/Samurai_Commander/Idle.png',
+    'Enemy1_run': 'assets/samurai-sprite/Samurai_Commander/Run.png',
+    'Enemy1_attack1': 'assets/samurai-sprite/Samurai_Commander/Attack_1.png'
+})
 
 # S
 SCREEN_WIDTH = 1220

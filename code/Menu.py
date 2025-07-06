@@ -10,7 +10,7 @@ from code.constants import *
 class Menu:
     def __init__(self, screen: Surface):
         self.screen = screen
-        self.surf = transform.scale(image.load(PATH_BG[0]), (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.surf = transform.scale(image.load(PATH_BG['MenuBg']), (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.rect = self.surf.get_rect()
 
     def run(self):

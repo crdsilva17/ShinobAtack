@@ -15,6 +15,7 @@ class Level:
         self.name = name
         self.entity_list: list[Entity] = []
         self.entity_list.append(FactoryEntity.get_entity('Player'))
+        self.entity_list.append(FactoryEntity.get_entity('Enemy1'))
 
     def run(self):
         # pygame.mixer_music.load('')
@@ -24,7 +25,7 @@ class Level:
         while True:
             clock_fps.tick(60)
             if self.name == 'level1Bg':
-                surf_bg = transform.scale(image.load(PATH_BG[1]), (SCREEN_WIDTH, SCREEN_HEIGHT))
+                surf_bg = transform.scale(image.load(PATH_BG[self.name]), (SCREEN_WIDTH, SCREEN_HEIGHT))
                 rect = surf_bg.get_rect()
                 self.screen.blit(source=surf_bg, dest=rect)
 
