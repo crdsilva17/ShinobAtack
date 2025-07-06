@@ -48,6 +48,7 @@ PATH_BG = ({
     'Player_attack2': 'assets/shinob-sprites/Samurai/Attack_2.png',
     'Enemy1_idle': 'assets/samurai-sprite/Samurai_Commander/Idle.png',
     'Enemy1_run': 'assets/samurai-sprite/Samurai_Commander/Run.png',
+    'Enemy1_walk': 'assets/samurai-sprite/Samurai_Commander/Walk.png',
     'Enemy1_attack1': 'assets/samurai-sprite/Samurai_Commander/Attack_1.png'
 })
 

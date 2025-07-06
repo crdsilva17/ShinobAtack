@@ -34,8 +34,10 @@ class Enemy(Entity):
         self.game_mediator.add_enemy(self)
 
     def move(self):
+        run = [5, 137, 266, 395, 520, 650, 776, 905]
+        self.w = 65
         player_pos = self.game_mediator.get_player_position()
-        self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
+        self.surf = image.load(PATH_BG[f'{self.name}_idle']).convert_alpha()
         if self.dir == 1:
             self.surf = transform.flip(self.surf, True, False)
         distance = math.hypot(player_pos[0] - self.position[0], 0) if player_pos else float('inf')
@@ -44,11 +46,22 @@ class Enemy(Entity):
         if player_pos and distance <= distance_max:
             # Perseguir o player no eixo X
             if player_pos[0] - self.position[0] > 30:
+                self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
                 self.dir = 0  # direita
                 self.position[0] += self.speed
+                self.wx = run[self.run_step]
+                self.run_step += 1
+                if self.run_step >= len(run) - 1:
+                    self.run_step = 0
             elif self.position[0] - player_pos[0] > 30:
+                self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
+                self.surf = transform.flip(self.surf, True, False)
                 self.dir = 1  # esquerda
                 self.position[0] -= self.speed
+                self.wx = run[self.run_step] + 55  # Constantante para compensar o flip da imagem
+                self.run_step -= 1
+                if self.run_step <= 0:
+                    self.run_step = len(run) - 1
             else:
                 self.attack()
         else:
@@ -59,9 +72,20 @@ class Enemy(Entity):
                 self.dir = random.choice([0, 1])  # nova direção aleatória
                 self.patrol_timer = 0
             if self.dir == 0:
-                self.position[0] += self.speed
+                self.position[0] += self.speed * 0.5
+                self.surf = image.load(PATH_BG[f'{self.name}_walk']).convert_alpha()
+                self.wx = run[self.run_step]
+                self.run_step += 1
+                if self.run_step >= len(run) - 1:
+                    self.run_step = 0
             else:
-                self.position[0] -= self.speed
+                self.position[0] -= self.speed * 0.5
+                self.surf = image.load(PATH_BG[f'{self.name}_walk']).convert_alpha()
+                self.surf = transform.flip(self.surf, True, False)
+                self.wx = run[self.run_step] + 55  # Constantante para compensar o flip da imagem
+                self.run_step -= 1
+                if self.run_step <= 0:
+                    self.run_step = len(run) - 1
             if self.position[0] <= self.map_limit[0]:
                 self.position[0] = self.map_limit[0]
                 self.dir = 0
@@ -70,8 +94,20 @@ class Enemy(Entity):
                 self.dir = 1
 
     def attack(self):
-        print(f'{self.name} attack')
-        pass
+        self.w = 110
+        attack_one = [22, 149, 273, 400]
+        self.surf = image.load(PATH_BG[f'{self.name}_attack1']).convert_alpha()
+        if self.dir > 0:
+            self.surf = transform.flip(self.surf, True, False)
+            self.wx = attack_one[self.atck] - (30 if self.type_attack == 1 else 20)
+            self.atck -= 1
+            if self.atck <= 0:
+                self.atck = len(attack_one) - 1
+        else:
+            self.wx = attack_one[self.atck]
+            self.atck += 1
+            if self.atck >= len(attack_one) - 1:
+                self.atck = 0
 
     def damage(self, receive: int):
         pass

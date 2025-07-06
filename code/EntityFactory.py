@@ -17,5 +17,5 @@ class FactoryEntity:
             case 'Enemy1':
                 return Enemy('Enemy1', 40, 53,
                              [SCREEN_WIDTH - random.randint(50, 100),
-                              SCREEN_HEIGHT - 200], PATH_BG[f'{entity_name}_idle'],54, 76, game_mediator)
+                              SCREEN_HEIGHT - 200], PATH_BG[f'{entity_name}_idle'],65, 95, game_mediator)
         return None
