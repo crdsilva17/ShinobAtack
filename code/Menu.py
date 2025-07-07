@@ -1,3 +1,5 @@
+import sys
+
 import pygame.mixer_music
 import pygame.draw
 from pygame import transform, image, display, event, font
@@ -50,7 +52,7 @@ class Menu:
 
             display.flip()
         display.quit()
-        quit()
+        sys.exit(0)
 
     def menu_text(self, size: int, text: str, color: tuple, position: tuple):
         text_font: Font = font.SysFont(name='Arial', size=size)

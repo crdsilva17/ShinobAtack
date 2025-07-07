@@ -1,3 +1,5 @@
+import sys
+
 import pygame.base
 import pygame.mixer_music
 from pygame import display, event, constants
@@ -38,4 +40,4 @@ class Game:
                     self.running = False
 
         pygame.display.quit()
-        quit()
+        sys.exit(0)

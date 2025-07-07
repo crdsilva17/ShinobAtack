@@ -1,3 +1,5 @@
+import sys
+
 import pygame.mixer_music
 import pygame.surface
 from pygame import display, image, transform, event, constants, time, font, key
@@ -87,7 +89,7 @@ class Level:
             for events in event.get():
                 if events.type == constants.QUIT:
                     display.quit()
-                    quit(0)
+                    sys.exit(0)
                 if events.type == EVENT_ENEMY:
                     if self.game_mediator.count_enemies() < ENEMY_MAX:
                         self.entity_list.append(FactoryEntity.get_entity('Enemy1', self.game_mediator))
