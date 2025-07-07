@@ -25,7 +25,7 @@ class Level:
     def run(self):
         pygame.mixer_music.load('assets/sound/level1.mp3')
         pygame.mixer_music.play(-1)
-        pygame.mixer_music.set_volume(0.1)
+        pygame.mixer_music.set_volume(0.3)
         clock_fps = time.Clock()
         while True:
             clock_fps.tick(60)
@@ -68,6 +68,7 @@ class Level:
                 self.game_mediator.check_attack(self.game_mediator.player, enemy)
                 if enemy.health <= 0:
                     self.player_score += 1
+                    self.game_mediator.player.health += 2
                     self.game_mediator.destroy_enemy(enemy)
                     self.entity_list.remove(enemy)
 

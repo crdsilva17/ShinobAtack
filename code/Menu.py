@@ -1,4 +1,5 @@
 import pygame.mixer_music
+import pygame.draw
 from pygame import transform, image, display, event, font
 from pygame.constants import *
 from pygame.font import Font
@@ -23,6 +24,12 @@ class Menu:
         while running:
             self.screen.blit(source=self.surf, dest=self.rect)
             self.menu_text(TEXT_BIG, "SHINOBI ATTACK", COLOR_RED, (SCREEN_CENTER, 120))
+            pygame.draw.rect(self.screen, COLOR_BLACK, (900, 150, 200, 200))
+            self.menu_text(TEXT_SMALL,'Este é um Jogo demo',COLOR_YELLOW, (1000, 200))
+            self.menu_text(TEXT_SMALL,'Movimentação [<-] [->]',COLOR_YELLOW, (1000, 230))
+            self.menu_text(TEXT_SMALL,'Ataque 1 [LCTRL]',COLOR_YELLOW, (1000, 260))
+            self.menu_text(TEXT_SMALL,'Ataque 2 [LALT]',COLOR_YELLOW, (1000, 290))
+
 
             for i in range(len(MENU_OPTION)):
                 if i == menu_option:

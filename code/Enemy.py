@@ -126,6 +126,8 @@ class Enemy(Entity):
                 sword_sound = pygame.mixer.Sound('assets/sound/attack2.wav')
                 hit_sound.play()
                 sword_sound.play()
+                hit_sound.set_volume(0.4)
+                sword_sound.set_volume(0.4)
             else:
                 self.attacking = False
             if action_type == 0:

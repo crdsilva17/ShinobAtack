@@ -54,7 +54,8 @@ PATH_BG = {
     'Enemy1_idle': 'assets/samurai-sprite/Samurai_Commander/Idle.png',
     'Enemy1_run': 'assets/samurai-sprite/Samurai_Commander/Run.png',
     'Enemy1_walk': 'assets/samurai-sprite/Samurai_Commander/Walk.png',
-    'Enemy1_attack1': 'assets/samurai-sprite/Samurai_Commander/Attack_1.png'
+    'Enemy1_attack1': 'assets/samurai-sprite/Samurai_Commander/Attack_1.png',
+    'Enemy1_dead': 'assets/samurai-sprite/Samurai_Commander/Dead.png'
 }
 
 # S
