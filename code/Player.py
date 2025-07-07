@@ -66,8 +66,6 @@ class Player(Entity):
             self.wx = 40
 
     def attack(self):
-        pygame.mixer_music.load('assets/sound/attack2.wav')
-        pygame.mixer_music.play()
         self.w = 104
         attack_one = [22, 149, 276, 403, 530, 657]
         self.surf = image.load(PATH_BG[f'{self.name}_attack{1+self.type_attack}']).convert_alpha()  # Carregar imagem correndo
@@ -86,6 +84,8 @@ class Player(Entity):
             self.atck += 1
             if self.atck >= len(attack_one) - (1 if self.type_attack == 0 else 3):
                 self.atck = 0
+        pygame.mixer_music.load('assets/sound/attack.wav')
+        pygame.mixer_music.play()
 
     def get_rect(self):
         return pygame.rect.Rect(self.position[0], self.position[1], self.w, self.h)
@@ -110,7 +110,6 @@ class Player(Entity):
     def damage(self, amount: int):
         self.health -= amount
         self.attacking = False
-        print(f"{self.name} recebeu dano! Vida restante: {self.health}")
 
     def get_pos(self):
         return self.position

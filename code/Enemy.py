@@ -2,6 +2,7 @@ import math
 import random
 
 import pygame
+import pygame.mixer_music
 from pygame import draw, font, image, transform
 from pygame.font import Font
 from pygame.rect import Rect
@@ -141,7 +142,8 @@ class Enemy(Entity):
     def damage(self, amount: int):
         self.health -= amount
         self.attacking = False
-        print(f"{self.name} recebeu dano! Vida restante: {self.health}")
+        pygame.mixer_music.load('assets/sound/attack2.wav')
+        pygame.mixer_music.play()
 
     def get_pos(self):
         return self.position
