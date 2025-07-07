@@ -1,105 +1,66 @@
 import pygame
+import pygame.image
+import pygame.mixer
 import pygame.mixer_music
-from pygame import draw, font, key, image, transform
-from pygame.constants import K_RIGHT, K_LEFT, K_LCTRL, K_LALT
+from pygame import draw, font, key, transform
+from pygame.constants import K_RIGHT, K_LEFT
 from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
+
 from code.Entity import Entity
-from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, SCREEN_WIDTH, PATH_BG, HEALTH
+from code.constants import COLOR_GREEN, COLOR_YELLOW, COLOR_RED, SCREEN_WIDTH, HEALTH, PATH_BG
 
 
 class Player(Entity):
     def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int):
         super().__init__(name, wx, wy, path, w, h)
-        self.health_limit = HEALTH[name] * 0.8
-        self.name = name
-        self.wx = wx
-        self.wy = wy
-        self.w = w
-        self.h = h
         self.position = position
-        self.path = path
         self.speed = 10
-        self.run_step = 0
-        self.dir = 0
-        self.atck = 0
-        self.type_attack = 0
+        self.health_limit = HEALTH[name] * 0.8
         self.health = HEALTH[self.name]
-        self.attack_range = 60
-        self.attacking = False
         self.entity_type = "player"
 
     def move(self):
-        run = [13, 142, 269, 396, 523, 650, 777, 904]  # Vetor para implementar animações
-        self.w = 54
         key_pressed = key.get_pressed()
         if key_pressed[K_RIGHT] and self.position[0] < SCREEN_WIDTH - 50:
-            self.dir = 0
-            self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()  # Carregar imagem correndo
+            self.direction = 0  # direction = right
             self.position[0] += 1 * self.speed
-            self.wx = run[self.run_step]
-            self.run_step += 1
-            if self.run_step >= len(run) - 1:
-                self.run_step = 0
 
         elif key_pressed[K_LEFT] and self.position[0] > 0:
-            self.surf = image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
-            self.surf = transform.flip(self.surf, True, False)  # Espelhar imagem
-            self.dir = 1
+            self.direction = 1  # direction = left
             self.position[0] -= 1 * self.speed
-            self.wx = run[self.run_step] + 52  # Constantante para compensar o flip da imagem
-            self.run_step -= 1
-            if self.run_step <= 0:
-                self.run_step = len(run) - 1
-        elif key_pressed[K_LCTRL]:
-            self.type_attack = 0
-            self.attack()
-        elif key_pressed[K_LALT]:
-            self.type_attack = 1
-            self.attack()
-        else:
-            self.run_step = 0
-            self.surf = image.load(PATH_BG[f'{self.name}_idle']).convert_alpha()
-            if self.dir > 0:
-                self.surf = transform.flip(self.surf, True, False)
-            self.wx = 40
 
-    def attack(self):
-        self.w = 104
-        attack_one = [22, 149, 276, 403, 530, 657]
-        self.surf = image.load(PATH_BG[f'{self.name}_attack{1+self.type_attack}']).convert_alpha()  # Carregar imagem correndo
-        if self.atck == 2:
-            self.attacking = True
-        else:
-            self.attacking = False
-        if self.dir > 0:
-            self.surf = transform.flip(self.surf, True, False)
-            self.wx = attack_one[self.atck] - (30 if self.type_attack == 1 else 20)
-            self.atck -= 1
-            if self.atck <= 0:
-                self.atck = len(attack_one) - (1 if self.type_attack == 0 else 3)
-        else:
-            self.wx = attack_one[self.atck]
-            self.atck += 1
-            if self.atck >= len(attack_one) - (1 if self.type_attack == 0 else 3):
-                self.atck = 0
-        pygame.mixer_music.load('assets/sound/attack.wav')
-        pygame.mixer_music.play()
+    def action_start(self, action_type=0):
+        if not self.action:
+            self.action_type = action_type
+            self.action_frame_index = 0
+            self.action_timer = 0
+            self.action = True
+            if action_type < 2:
+                hit_sound = pygame.mixer.Sound('assets/sound/attack.wav')
+                sword_sound = pygame.mixer.Sound('assets/sound/attack2.wav')
+                hit_sound.play()
+                sword_sound.play()
+            if action_type == 0:
+                self.action_sequence = [22, 149, 276, 403, 530, 657]
+            elif action_type == 0:
+                self.action_sequence = [22, 149, 276]
+            else:
+                self.action_sequence = [13, 142, 269, 396, 523, 650]
 
     def get_rect(self):
         return pygame.rect.Rect(self.position[0], self.position[1], self.w, self.h)
 
     def get_attack_rect(self):
-        """Calcula a área onde a espada atinge."""
-        if self.dir == 0:  # direita
+        if self.direction == 0:  # right
             return pygame.rect.Rect(
                 self.position[0] + self.w,
                 self.position[1],
                 self.attack_range,
                 self.h
             )
-        else:  # esquerda
+        else:  # left
             return pygame.rect.Rect(
                 self.position[0] - self.attack_range,
                 self.position[1],
@@ -109,10 +70,47 @@ class Player(Entity):
 
     def damage(self, amount: int):
         self.health -= amount
-        self.attacking = False
 
     def get_pos(self):
         return self.position
+
+    def update(self, surface: Surface):
+        self.move()
+        self.action_update()
+        self.draw(surface, self.sprite_sheet, (self.wx, self.wy),
+                  (self.get_pos()[0], self.get_pos()[1]), (self.w, self.h))
+
+    def action_update(self):
+        self.w = 104
+        if not self.action:
+            self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_idle']).convert_alpha()
+            return
+        self.action_timer += 1
+        if self.action_timer >= self.action_frame_delay:
+            self.action_timer = 0
+            self.action_frame_index += 1
+            if self.action_frame_index >= len(self.action_sequence):
+                self.action_frame_index = 0
+                self.action = False
+                return
+        frame = self.action_sequence[self.action_frame_index]
+        if self.action_type < 2:
+            self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_attack{1 + self.action_type}']).convert_alpha()
+        else:
+            self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
+
+        if self.direction > 0:
+            self.sprite_sheet = transform.flip(self.sprite_sheet, True, False)
+            self.wx = frame - (30 if self.action_type == 1 else 20)
+        else:
+            self.wx = frame
+
+    def draw(self, surface, img, wxy: tuple, pos: tuple, size: tuple):
+        surf = pygame.surface.Surface(size).convert()
+        surf.blit(img, (0, 0), (wxy, size))
+        alpha = surf.get_at((0, 0))
+        surf.set_colorkey(alpha)
+        surf.blit(surf, pos)
 
     def life_rect(self, screen, health: int, position: tuple):
         if health > self.health_limit:
