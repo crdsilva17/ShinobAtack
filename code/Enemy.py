@@ -110,10 +110,10 @@ class Enemy(Entity):
                 sword_sound.play()
             if action_type == 0:
                 self.action_sequence = [22, 149, 276, 403, 530, 657]
-            elif action_type == 0:
-                self.action_sequence = [22, 149, 276]
+            elif action_type == 1:
+                self.action_sequence = [22, 149, 273, 400]
             else:
-                self.action_sequence = [13, 142, 269, 396, 523, 650]
+                self.action_sequence = [5, 137, 266, 395, 520, 650]
 
     def get_rect(self):
         return pygame.rect.Rect(self.position[0], self.position[1], self.w, self.h)

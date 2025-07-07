@@ -44,7 +44,7 @@ class Player(Entity):
                 sword_sound.play()
             if action_type == 0:
                 self.action_sequence = [22, 149, 276, 403, 530, 657]
-            elif action_type == 0:
+            elif action_type == 1:
                 self.action_sequence = [22, 149, 276]
             else:
                 self.action_sequence = [13, 142, 269, 396, 523, 650]
