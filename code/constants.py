@@ -12,10 +12,10 @@ COLOR_BLACK = (0, 0, 0)
 
 # D
 DAMAGE = {
-    'Player': 10,
-    'Enemy1': 4,
-    'Enemy2': 1,
-    'Enemy3': 2
+    'Player': 2,
+    'Enemy1': 0.1,
+    'Enemy2': 0.2,
+    'Enemy3': 0.4
 }
 
 # E

@@ -18,15 +18,16 @@ class Entity(ABC):
         self.health_limit = None
         self.action_type = 0
         self.action = False
+        self.attacking = False
         self.action_timer = 0
         self.action_frame_delay = 1
         self.action_frame_index = 0
         self.action_sequence = []
-        self.attack_range = 40
+        self.attack_range = 2
         self.entity_type = "neutral"
 
     @abstractmethod
-    def update(self, surface:Surface):
+    def update(self, surface):
         pass
 
     @abstractmethod

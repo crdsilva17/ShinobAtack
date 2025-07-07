@@ -2,7 +2,7 @@ import pygame
 import pygame.image
 import pygame.mixer
 import pygame.mixer_music
-from pygame import draw, font, key, transform
+from pygame import draw, font, key, transform, display
 from pygame.constants import K_RIGHT, K_LEFT
 from pygame.font import Font
 from pygame.rect import Rect
@@ -19,6 +19,7 @@ class Player(Entity):
         self.speed = 10
         self.health_limit = HEALTH[name] * 0.8
         self.health = HEALTH[self.name]
+        self.attack_range = 10
         self.entity_type = "player"
 
     def move(self):
@@ -38,10 +39,13 @@ class Player(Entity):
             self.action_timer = 0
             self.action = True
             if action_type < 2:
+                self.attacking = True
                 hit_sound = pygame.mixer.Sound('assets/sound/attack.wav')
                 sword_sound = pygame.mixer.Sound('assets/sound/attack2.wav')
                 hit_sound.play()
                 sword_sound.play()
+            else:
+                self.attacking = False
             if action_type == 0:
                 self.action_sequence = [22, 149, 276, 403, 530, 657]
             elif action_type == 1:
@@ -77,8 +81,7 @@ class Player(Entity):
     def update(self, surface: Surface):
         self.move()
         self.action_update()
-        self.draw(surface, self.sprite_sheet, (self.wx, self.wy),
-                  (self.get_pos()[0], self.get_pos()[1]), (self.w, self.h))
+        self.draw(surface, self.sprite_sheet, (self.wx, self.wy), self.get_pos(), (self.w, self.h))
 
     def action_update(self):
         self.w = 104
@@ -93,7 +96,12 @@ class Player(Entity):
                 self.action_frame_index = 0
                 self.action = False
                 return
+        if self.direction == 0:
+            self.action_sequence.sort(reverse=False)
+        else:
+            self.action_sequence.sort(reverse=True)
         frame = self.action_sequence[self.action_frame_index]
+
         if self.action_type < 2:
             self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_attack{1 + self.action_type}']).convert_alpha()
         else:
@@ -110,7 +118,7 @@ class Player(Entity):
         surf.blit(img, (0, 0), (wxy, size))
         alpha = surf.get_at((0, 0))
         surf.set_colorkey(alpha)
-        surf.blit(surf, pos)
+        surface.blit(surf, pos)
 
     def life_rect(self, screen, health: int, position: tuple):
         if health > self.health_limit:

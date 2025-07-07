@@ -1,6 +1,6 @@
 import pygame.mixer_music
 import pygame.surface
-from pygame import display, image, transform, event, constants, time, font
+from pygame import display, image, transform, event, constants, time, font, key
 from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
@@ -35,11 +35,22 @@ class Level:
                 self.screen.blit(source=surf_bg, dest=rect)
 
                 for ent in self.entity_list:
-                    self.level_blit(ent.surf, (ent.wx, ent.wy), ent.get_pos(), (ent.w, ent.h))
                     ent.entity_text(self.screen, TEXT_SMALL, ent.name, COLOR_BLACK,
                                     (ent.get_pos()[0] + 50, ent.get_pos()[1] - TEXT_POS[ent.name]))
-                    ent.life_rect(self.screen, ent.health, (ent.get_pos()[0], ent.get_pos()[1] - HEALTH_POS[ent.name]))
-                    ent.move()
+                    ent.life_rect(self.screen, ent.health,
+                                  (ent.get_pos()[0], ent.get_pos()[1] - HEALTH_POS[ent.name]))
+                    ent.update(self.screen)
+
+                keys = key.get_pressed()
+                if keys[constants.K_LCTRL]:
+                    self.game_mediator.player.action_start(0)
+                elif keys[constants.K_LALT]:
+                    self.game_mediator.player.action_start(1)
+                if keys[constants.K_RIGHT]:
+                    self.game_mediator.player.action_start(2)
+                if keys[constants.K_LEFT]:
+                    self.game_mediator.player.action_start(3)
+
 
             # Aumentando dificuldade conforme Score
             match self.player_score:
@@ -90,9 +101,3 @@ class Level:
         text_rect: Rect = text_surf.get_rect(left=position[0], top=position[1])
         self.screen.blit(text_surf, text_rect)
 
-    def level_blit(self, img, wxy: tuple, pos: tuple, size: tuple):
-        surf = pygame.surface.Surface(size).convert()
-        surf.blit(img, (0, 0), (wxy, size))
-        alpha = surf.get_at((0, 0))
-        surf.set_colorkey(alpha)
-        self.screen.blit(surf, pos)

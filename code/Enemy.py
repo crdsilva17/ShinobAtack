@@ -2,9 +2,9 @@ import math
 import random
 
 import pygame
-import pygame.mixer_music
-import pygame.mixer
 import pygame.image
+import pygame.mixer
+import pygame.mixer_music
 from pygame import draw, font, transform
 from pygame.font import Font
 from pygame.rect import Rect
@@ -18,7 +18,7 @@ class Enemy(Entity):
     def __init__(self, name: str, wx: int, wy: int, position: list[int], path: str, w: int, h: int,
                  game_mediator):
         super().__init__(name, wx, wy, path, w, h)
-        self.speed = random.randint(2, 15)
+        self.speed = random.randint(2, 8)
         self.direction = random.choice([0, 1])
         self.patrol_timer = 0
         self.patrol_delay = 60
@@ -28,7 +28,6 @@ class Enemy(Entity):
         self.health = HEALTH[self.name]
         self.game_mediator = game_mediator
         self.game_mediator.add_enemy(self)
-        self.attack_range = 20
         self.entity_type = "enemy"
 
     def move(self):
@@ -37,14 +36,20 @@ class Enemy(Entity):
         distance_max = 500
 
         if player_pos and distance <= distance_max:
+
             if player_pos[0] - self.position[0] > 30:
+                self.action_start(3)
                 self.direction = 0
                 self.position[0] += self.speed
             elif self.position[0] - player_pos[0] > 30:
+                self.action_start(3)
                 self.direction = 1
                 self.position[0] -= self.speed
+            else:
+                self.action_start(0)
         else:
             self.patrol_timer += 1
+            self.action_start(2)
             if self.patrol_timer >= self.patrol_delay:
                 self.direction = random.choice([0, 1])  # new random direction
                 self.patrol_timer = 0
@@ -66,7 +71,11 @@ class Enemy(Entity):
                   (self.get_pos()[0], self.get_pos()[1]), (self.w, self.h))
 
     def action_update(self):
-        self.w = 104
+        if self.action_type > 1:
+            self.w = 65
+        else:
+            self.w = 110
+
         if not self.action:
             self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_idle']).convert_alpha()
             return
@@ -78,15 +87,23 @@ class Enemy(Entity):
                 self.action_frame_index = 0
                 self.action = False
                 return
+
+        if self.direction == 0:
+            self.action_sequence.sort(reverse=False)
+        else:
+            self.action_sequence.sort(reverse=True)
         frame = self.action_sequence[self.action_frame_index]
+
         if self.action_type < 2:
             self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_attack{1 + self.action_type}']).convert_alpha()
+        elif self.action_type == 2:
+            self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_walk']).convert_alpha()
         else:
             self.sprite_sheet = pygame.image.load(PATH_BG[f'{self.name}_run']).convert_alpha()
 
         if self.direction > 0:
             self.sprite_sheet = transform.flip(self.sprite_sheet, True, False)
-            self.wx = frame - (30 if self.action_type == 1 else 20)
+            self.wx = frame + (55 if self.action_type > 1 else -20)
         else:
             self.wx = frame
 
@@ -95,7 +112,7 @@ class Enemy(Entity):
         surf.blit(img, (0, 0), (wxy, size))
         alpha = surf.get_at((0, 0))
         surf.set_colorkey(alpha)
-        surf.blit(surf, pos)
+        surface.blit(surf, pos)
 
     def action_start(self, action_type=0):
         if not self.action:
@@ -104,12 +121,15 @@ class Enemy(Entity):
             self.action_timer = 0
             self.action = True
             if action_type < 2:
+                self.attacking = True
                 hit_sound = pygame.mixer.Sound('assets/sound/attack.wav')
                 sword_sound = pygame.mixer.Sound('assets/sound/attack2.wav')
                 hit_sound.play()
                 sword_sound.play()
+            else:
+                self.attacking = False
             if action_type == 0:
-                self.action_sequence = [22, 149, 276, 403, 530, 657]
+                self.action_sequence = [22, 149, 273, 400]
             elif action_type == 1:
                 self.action_sequence = [22, 149, 273, 400]
             else:
