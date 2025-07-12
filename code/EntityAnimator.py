@@ -1,0 +1,52 @@
+from abc import ABC, abstractmethod
+
+
+class EntityAnimator(ABC):
+    def __init__(self, wx: int, wy: int, path: str, w: int, h: int):
+        self.sprite_sheet = None
+        self.path = path
+        self.speed = 0
+        self.wx = wx
+        self.wy = wy
+        self.w = w
+        self.h = h
+        self.direction = 0
+        self.action_type = 0
+        self.action = False
+        self.attacking = False
+        self.action_timer = 0
+        self.action_frame_delay = 1
+        self.action_frame_index = 0
+        self.action_sequence = []
+        self.attack_range = 2
+        self.entity_type = "neutral"
+
+    @abstractmethod
+    def update(self, surface):
+        pass
+
+    @abstractmethod
+    def action_update(self):
+        pass
+
+    @abstractmethod
+    def draw(self, surface, img, wxy: tuple, pos: tuple, size: tuple):
+        pass
+
+    @abstractmethod
+    def move(self):
+        pass
+
+
+    @abstractmethod
+    def life_rect(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def action_start(self, action_type=0):
+        pass
+
+
+    @abstractmethod
+    def entity_text(self, *args, **kwargs):
+        pass
